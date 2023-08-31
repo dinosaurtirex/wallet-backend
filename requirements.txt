@@ -1,0 +1,6 @@
+tortoise-orm[asyncpg]
+aerich
+sanic[ext]
+pydantic
+tqdm 
+requests
