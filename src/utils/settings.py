@@ -14,7 +14,8 @@ API_CODES = {
     1003: "invalid_credentials",
     1004: "too_short_password",
     1005: "invalid_currency_provided",
-    1006: "provide_currency"
+    1006: "provide_currency",
+    1007: "not_enough_money"
 }
 
 BASE_STATIC_PATH = "static"

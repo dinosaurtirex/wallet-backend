@@ -31,6 +31,8 @@ class BalanceService:
             new_amount = current_amount + amount 
         else:
             new_amount = current_amount - amount 
+            if new_amount < 0:
+                raise ValueError(API_CODES[1007])
         return await Balance.create(
             currency=currency,
             amount=new_amount,
