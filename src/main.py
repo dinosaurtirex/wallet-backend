@@ -15,7 +15,7 @@ from wallet.views import wallet_bp
 from auth.views import auth_bp
 
 
-app = Sanic("app")
+app = Sanic("wallet_backend")
 
 app.blueprint(auth_bp)
 app.blueprint(wallet_bp)
@@ -28,13 +28,12 @@ else:
 
 
 app.static(BASE_STATIC_PATH, BASE_STATIC_PATH)
-if "Windows" in PLATFORM:
-    app.config.CORS_ORIGINS = "*"
-else:
-    app.config.CORS_ORIGINS = "*"
+
+app.config.CORS_ORIGINS = "*"
 app.config.REQUEST_TIMEOUT = 60 * 5
 app.config.RESPONSE_TIMEOUT = 60 * 5
 app.config.REQUEST_MAX_SIZE = 200_000_000
+
 Extend(app)
 
 
