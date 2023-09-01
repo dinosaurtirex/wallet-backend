@@ -9,9 +9,14 @@ from utils.settings import BASE_STATIC_PATH
 from utils.settings import API_CODES
 from utils.settings import PLATFORM
 from orm.db import TORTOISE_ORM
+from auth.services import check_auth_and_get_user_from_request
+
+from auth.views import auth_bp
 
 
 app = Sanic("app")
+
+app.blueprint(auth_bp)
 
 
 if "Windows" in PLATFORM:
@@ -33,7 +38,10 @@ Extend(app)
 
 @app.on_request
 async def run_before_request_handler(request: Request):
-    ...
+    is_authenticated, user_instance = await check_auth_and_get_user_from_request(request.token)
+    request.ctx.is_authenticated = is_authenticated
+    if is_authenticated:
+        request.ctx.user = user_instance
 
 
 @app.on_response 

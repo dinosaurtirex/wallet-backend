@@ -11,7 +11,8 @@ TORTOISE_ORM = {
         "models": {
             "models": [
                 "aerich.models",
-                "wallet.models"
+                "wallet.models",
+                "auth.models"
             ],
             "default_connection": "default",
             "maxsize": 50
