@@ -59,7 +59,7 @@ class WalletViews(BalanceService):
         )
         return json({"status": API_CODES[1000]})
     
-    async def Сspent_money_view(self, request: Request) -> HTTPResponse:
+    async def spent_money_view(self, request: Request) -> HTTPResponse:
         await self.insert_or_spent_money(
             False,
             self.process_currency(request.form.get("currency")),
