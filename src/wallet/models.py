@@ -2,7 +2,7 @@ from tortoise import fields
 from tortoise.models import Model
 
 
-class Wallet(Model):
+class Balance(Model):
 
     id          = fields.IntField(pk=True)
     currency    = fields.CharField(max_length=64, null=False)

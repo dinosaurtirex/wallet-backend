@@ -11,12 +11,14 @@ from utils.settings import PLATFORM
 from orm.db import TORTOISE_ORM
 from auth.services import check_auth_and_get_user_from_request
 
+from wallet.views import wallet_bp
 from auth.views import auth_bp
 
 
 app = Sanic("app")
 
 app.blueprint(auth_bp)
+app.blueprint(wallet_bp)
 
 
 if "Windows" in PLATFORM:
@@ -27,7 +29,7 @@ else:
 
 app.static(BASE_STATIC_PATH, BASE_STATIC_PATH)
 if "Windows" in PLATFORM:
-    app.config.CORS_ORIGINS = "http://localhost:3000"
+    app.config.CORS_ORIGINS = "*"
 else:
     app.config.CORS_ORIGINS = "*"
 app.config.REQUEST_TIMEOUT = 60 * 5

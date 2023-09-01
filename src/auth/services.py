@@ -1,6 +1,7 @@
 import re
 import uuid 
-
+import random 
+import string
 from sanic import Request 
 from sanic import Blueprint 
 from sanic.response import json 
@@ -33,6 +34,9 @@ class AuthService:
 
     def __is_valid_email(self, email: str) -> bool:
         return re.match(r'^[\w\.-]+@[\w\.-]+\.\w+$', email)
+    
+    def generate_password(self, length: int=8) -> str:
+        return ''.join(random.choice(string.ascii_letters + string.digits + string.punctuation) for _ in range(length))
 
     async def register(self, email: str) -> User:
         user_instance = await User.get_or_none(email=email)
@@ -40,7 +44,7 @@ class AuthService:
             raise ValueError(API_CODES[1003])
         if not self.__is_valid_email(email):
             raise ValueError(API_CODES[1003])
-        return await User.create(email=email, password=generate_uuid(32))
+        return await User.create(email=email, password=self.generate_password())
 
     async def login(self, email: str, password: str) -> Session:
         user_instance = await User.get_or_none(email=email, password=password)
