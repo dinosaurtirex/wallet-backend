@@ -15,6 +15,7 @@ class BalanceService:
         return currency
 
     def process_tag(self, tag: str) -> str:
+        # to do: check for spec symbols, only eng alphabet should be here
         return tag.lstrip().rstrip().replace(" ","_").lower()
 
     async def get_current_balance(self, owner: User, currency: str) -> float:
