@@ -55,11 +55,11 @@ async def hello_world_view(request: Request) -> HTTPResponse:
 
 
 # @app.exception(Exception)
-# async def catch_anything(request, exception):
-#     return json({
-#         "status": API_CODES[1001], 
-#         "error": str( exception )
-#     }, status=500)
+async def catch_anything(request, exception):
+     return json({
+         "status": API_CODES[1001], 
+         "error": str( exception )
+     }, status=500)
 
 
 register_tortoise(
