@@ -16,6 +16,12 @@ async def get_my_balance_view(request: Request) -> HTTPResponse:
     return await WalletViews().get_my_balance_view(request)
 
 
+@wallet_bp.route("/get/balance/history", methods=["GET"])
+@authorized()
+async def transaction_history_view(request: Request) -> HTTPResponse:
+    return await WalletViews().transaction_history_view(request)
+
+
 @wallet_bp.route("/add/balance", methods=["POST"])
 @authorized()
 async def add_money_view(request: Request) -> HTTPResponse:

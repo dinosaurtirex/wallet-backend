@@ -21,14 +21,9 @@ app.blueprint(auth_bp)
 app.blueprint(wallet_bp)
 
 
-if "Windows" in PLATFORM:
-    app.config.OAS = True
-else:
-    app.config.OAS = False 
-
-
 app.static(BASE_STATIC_PATH, BASE_STATIC_PATH)
 
+app.config.OAS = False 
 app.config.CORS_ORIGINS = "*"
 app.config.REQUEST_TIMEOUT = 60 * 5
 app.config.RESPONSE_TIMEOUT = 60 * 5
@@ -39,7 +34,10 @@ Extend(app)
 
 @app.on_request
 async def run_before_request_handler(request: Request):
-    is_authenticated, user_instance = await check_auth_and_get_user_from_request(request.token)
+    is_authenticated, user_instance = \
+        await check_auth_and_get_user_from_request(
+            request.token
+        )
     request.ctx.is_authenticated = is_authenticated
     if is_authenticated:
         request.ctx.user = user_instance
@@ -55,10 +53,13 @@ async def hello_world_view(request: Request) -> HTTPResponse:
     return json({"status": API_CODES[1000]})
 
 
-#if not "Windows" in PLATFORM: 
-@app.exception(Exception)
-async def catch_anything(request, exception):
-    return json({"status": API_CODES[1001], "error": str( exception )}, status=500)
+
+# @app.exception(Exception)
+# async def catch_anything(request, exception):
+#     return json({
+#         "status": API_CODES[1001], 
+#         "error": str( exception )
+#     }, status=500)
 
 
 register_tortoise(

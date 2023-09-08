@@ -5,7 +5,7 @@ PLATFORM = platform.platform()
 
 TIMEZONE = pytz.timezone("Europe/Moscow")
 
-DB_URL = f"postgres://wallet_user:69de4794b28b368aec69de4794b2ebef901c1f1968@localhost:5432/wallet_db"
+DB_URL = "postgres://wallet_user:69de4794b28b368aec69de4794b2ebef901c1f1968@localhost:5432/wallet_db"
 
 API_CODES = {
     1000: "success",

@@ -20,12 +20,23 @@ class BalanceService:
     async def get_current_balance(self, owner: User, currency: str) -> float:
         if currency is None:
             raise ValueError(API_CODES[1006])
-        balance_instances = await Balance.filter(owner=owner, currency=currency)
+        balance_instances = await Balance.filter(
+            owner=owner, 
+            currency=currency
+        )
         if len(balance_instances) == 0:
             return 0.0
         return balance_instances[-1].amount
 
-    async def insert_or_spent_money(self, insert: bool, currency: str, amount: float, tag: str | None, description: str | None, owner: User) -> Balance:
+    async def insert_or_spent_money(
+        self, 
+        insert: bool, 
+        currency: str, 
+        amount: float, 
+        tag: str | None, 
+        description: str | None, 
+        owner: User
+    ) -> Balance:
         current_amount = await self.get_current_balance(owner, currency)
         if insert:
             new_amount = current_amount + amount 
@@ -41,13 +52,42 @@ class BalanceService:
             owner=owner
         )
     
+    async def get_transaction_history(
+        self, 
+        currency: str, 
+        owner: User
+    ) -> list[Balance]:
+        arguments = {
+            "owner":    owner,
+            "currency": currency
+        }
+        transactions = await Balance.filter(**arguments)
+        history = []
+        for i, transaction in enumerate(transactions):
+            if i == 0:
+                history.append({
+                    "diffrence": transaction.amount ,
+                    "datetime": str(transaction.added_at),
+                    "currency": transaction.currency
+                })
+            else:
+                history.append({
+                    "diffrence": transaction.amount - transactions[i-1].amount,
+                    "datetime": str(transaction.added_at),
+                    "currency": transaction.currency
+                })
+        return history
+        
 
 class WalletViews(BalanceService):
 
     async def get_my_balance_view(self, request: Request) -> HTTPResponse:
         return json({
             "status": API_CODES[1000],
-            "amount": await self.get_current_balance(request.ctx.user, request.args.get("currency"))
+            "amount": await self.get_current_balance(
+                request.ctx.user,
+                request.args.get("currency")
+            )
         })
     
     async def add_money_view(self, request: Request) -> HTTPResponse:
@@ -71,3 +111,12 @@ class WalletViews(BalanceService):
             request.ctx.user
         )
         return json({"status": API_CODES[1000]})
+
+    async def transaction_history_view(self, request: Request) -> HTTPResponse:
+        return json({
+            "status": API_CODES[1000],
+            "data": await self.get_transaction_history(
+                request.args.get("currency"),
+                request.ctx.user
+            )
+        })

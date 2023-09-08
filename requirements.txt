@@ -4,3 +4,5 @@ sanic[ext]
 pydantic
 tqdm 
 requests
+ruff
+mypy

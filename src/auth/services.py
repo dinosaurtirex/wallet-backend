@@ -3,7 +3,6 @@ import uuid
 import random 
 import string
 from sanic import Request 
-from sanic import Blueprint 
 from sanic.response import json 
 from sanic.response import HTTPResponse
 
@@ -21,7 +20,9 @@ def generate_uuid(length: int=16) -> str:
     return huge_uuid[:length]
 
 
-async def check_auth_and_get_user_from_request(token: str) -> tuple[bool, User | None]:
+async def check_auth_and_get_user_from_request(
+    token: str
+) -> tuple[bool, User | None]:
     user_session = await Session.get_or_none(token=token)
     if user_session is None:
         return (False, None)
@@ -35,8 +36,15 @@ class AuthService:
     def __is_valid_email(self, email: str) -> bool:
         return re.match(r'^[\w\.-]+@[\w\.-]+\.\w+$', email)
     
-    def generate_password(self, length: int=8) -> str:
-        return ''.join(random.choice(string.ascii_letters + string.digits + string.punctuation) for _ in range(length))
+    def generate_password(
+        self, 
+        length: int=8
+    ) -> str:
+        return ''.join(
+            random.choice(
+                string.ascii_letters + string.digits + string.punctuation
+            ) for _ in range(length)
+        )
 
     async def register(self, email: str) -> User:
         user_instance = await User.get_or_none(email=email)
@@ -44,7 +52,10 @@ class AuthService:
             raise ValueError(API_CODES[1003])
         if not self.__is_valid_email(email):
             raise ValueError(API_CODES[1003])
-        return await User.create(email=email, password=self.generate_password())
+        return await User.create(
+            email=email, 
+            password=self.generate_password()
+        )
 
     async def login(self, email: str, password: str) -> Session:
         user_instance = await User.get_or_none(email=email, password=password)
@@ -56,10 +67,18 @@ class AuthService:
         )
         return new_session.token
     
-    async def logout(self, email: str | None, password: str | None, owner: User | None) -> None:
+    async def logout(
+        self, 
+        email: str | None, 
+        password: str | None,
+        owner: User | None
+    ) -> None:
         user_instance = owner 
         if user_instance is None:
-            user_instance = await User.get_or_none(email=email, password=password)
+            user_instance = await User.get_or_none(
+                email=email, 
+                password=password
+            )
             if user_instance is None:
                 raise ValueError(API_CODES[1003])
         for session in await Session.filter(owner=user_instance):
@@ -74,13 +93,19 @@ class AuthServiceViews(AuthService):
             "status": API_CODES[1000],
             "id": new_user.id,
             "generated_password": new_user.password,
-            "token": await self.login(request.form.get("email"), new_user.password)
+            "token": await self.login(
+                request.form.get("email"), 
+                new_user.password
+            )
         })
     
     async def login_view(self, request: Request) -> HTTPResponse:
         return json({
             "status": API_CODES[1000],
-            "token": await self.login(request.form.get("email"), request.form.get("password"))
+            "token": await self.login(
+                request.form.get("email"), 
+                request.form.get("password")
+            )
         })
     
     async def logout_view(self, request: Request) -> HTTPResponse:
