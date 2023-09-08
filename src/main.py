@@ -54,7 +54,7 @@ async def hello_world_view(request: Request) -> HTTPResponse:
 
 
 
-# @app.exception(Exception)
+@app.exception(Exception)
 async def catch_anything(request, exception):
      return json({
          "status": API_CODES[1001], 
